@@ -26,10 +26,7 @@ SECRET_KEY = 'django-insecure-=9z^a3+xg)$qhhk1_7112_zc0!ix&eeu3htdw3=3dh04m2f1w$
 
 DEBUG = True
 
-ALLOWED_HOSTS = [
-    "*",
-    ".azurewebsites.net",
-]
+ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
     "https://crop-disease-app-b3bmgtbaa9edeff4.centralindia-01.azurewebsites.net"

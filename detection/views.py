@@ -10,6 +10,7 @@ from .forms import ImageUploadForm, ImageURLForm
 from azure.storage.blob import BlobServiceClient
 import os
 
+
 def upload_to_blob(file):
     connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
     container_name = "leaf-images"
