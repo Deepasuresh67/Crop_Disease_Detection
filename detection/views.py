@@ -11,6 +11,14 @@ from azure.storage.blob import BlobServiceClient
 import os
 
 
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+model_path = os.path.join(BASE_DIR, "detection", "model.tflite")
+labels_path = os.path.join(BASE_DIR, "detection", "labels.txt")
+
+interpreter = tf.lite.Interpreter(model_path=model_path)
+interpreter.allocate_tensors()
+
 def upload_to_blob(file):
     connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
     container_name = "leaf-images"
