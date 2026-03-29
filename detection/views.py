@@ -7,7 +7,7 @@ import numpy as np
 import requests
 from io import BytesIO
 from .forms import ImageUploadForm, ImageURLForm
-
+from azure.storage.blob import BlobServiceClient
 import os
 
 
