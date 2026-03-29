@@ -44,9 +44,9 @@ def upload_image(request):
         upload_form = ImageUploadForm(request.POST, request.FILES)
 
         if upload_form.is_valid():
-
             upload_form.save()
             uploaded_image = upload_form.instance
+
             image_file = request.FILES['image']
             result = predict_image(image_file)
 
@@ -68,10 +68,10 @@ def upload_image(request):
         })
 
     upload_form = ImageUploadForm()
-
     return render(request, 'detection/upload_image.html', {
-        'upload_form': upload_form,
+        'upload_form': upload_form
     })
+
 def enter_url(request):
     if request.method == 'POST':
         url_form = ImageURLForm(request.POST)
