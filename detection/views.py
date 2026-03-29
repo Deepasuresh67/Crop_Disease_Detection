@@ -24,9 +24,18 @@ def upload_to_blob(file):
     container_name = "leaf-images"
 
     blob_service_client = BlobServiceClient.from_connection_string(connection_string)
-    blob_client = blob_service_client.get_blob_client(container=container_name, blob=file.name)
+
+    blob_client = blob_service_client.get_blob_client(
+        container=container_name,
+        blob=file.name
+    )
 
     blob_client.upload_blob(file, overwrite=True)
+
+    # generate image URL
+    image_url = f"https://{blob_service_client.account_name}.blob.core.windows.net/{container_name}/{file.name}"
+
+    return image_url
 
 # Load the TFLite model
 model_path = "detection/model.tflite"
@@ -49,16 +58,17 @@ def weather_view(request):
 
 def upload_image(request):
 
-    from azure.storage.blob import BlobServiceClient   # move import here
-
     if request.method == 'POST':
         upload_form = ImageUploadForm(request.POST, request.FILES)
 
         if upload_form.is_valid():
-            upload_form.save()
-            uploaded_image = upload_form.instance
 
             image_file = request.FILES['image']
+
+            # Upload image to Azure Blob Storage
+            image_url = upload_to_blob(image_file)
+
+            # Run prediction
             result = predict_image(image_file)
 
             if 'error' in result:
@@ -70,7 +80,7 @@ def upload_image(request):
             return render(request, 'detection/result.html', {
                 'class_name': result['class_name'],
                 'confidence': result['confidence'],
-                'image_url': uploaded_image.image.url
+                'image_url': image_url
             })
 
         return render(request, 'detection/upload_image.html', {
@@ -79,6 +89,7 @@ def upload_image(request):
         })
 
     upload_form = ImageUploadForm()
+
     return render(request, 'detection/upload_image.html', {
         'upload_form': upload_form
     })
