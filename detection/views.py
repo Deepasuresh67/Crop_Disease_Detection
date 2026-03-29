@@ -44,14 +44,10 @@ def upload_image(request):
 
         if upload_form.is_valid():
 
-            # Save image in database
-            uploaded_image = upload_form.save()
-
-            # Upload image to Azure Blob Storage
-            upload_to_blob(request.FILES['image'])
-
-            # Run prediction
-            result = predict_image(uploaded_image.image.path)
+            upload_form.save()
+            uploaded_image = upload_form.instance
+            image_file = request.FILES['image']
+            result = predict_image(image_file)
 
             if 'error' in result:
                 return render(request, 'detection/upload_image.html', {
