@@ -7,6 +7,17 @@ import numpy as np
 import requests
 from io import BytesIO
 from .forms import ImageUploadForm, ImageURLForm
+from azure.storage.blob import BlobServiceClient
+import os
+
+def upload_to_blob(file):
+    connection_string = os.getenv("AZURE_STORAGE_CONNECTION_STRING")
+    container_name = "leaf-images"
+
+    blob_service_client = BlobServiceClient.from_connection_string(connection_string)
+    blob_client = blob_service_client.get_blob_client(container=container_name, blob=file.name)
+
+    blob_client.upload_blob(file, overwrite=True)
 
 # Load the TFLite model
 model_path = "detection/model.tflite"
@@ -30,34 +41,40 @@ def weather_view(request):
 def upload_image(request):
     if request.method == 'POST':
         upload_form = ImageUploadForm(request.POST, request.FILES)
+
         if upload_form.is_valid():
-            upload_form.save()
-            uploaded_image = upload_form.instance
+
+            # Save image in database
+            uploaded_image = upload_form.save()
+
+            # Upload image to Azure Blob Storage
+            upload_to_blob(request.FILES['image'])
+
+            # Run prediction
             result = predict_image(uploaded_image.image.path)
+
             if 'error' in result:
                 return render(request, 'detection/upload_image.html', {
                     'upload_form': upload_form,
                     'error': result['error']
                 })
-            else:
-                return render(request, 'detection/result.html', {
-                    'class_name': result['class_name'],
-                    'confidence': result['confidence'],
-                    'image_url': uploaded_image.image.url
-                })
-        else:
-            return render(request, 'detection/upload_image.html', {
-                'upload_form': upload_form,
-                'error': 'Invalid form submission. Please try again.'
+
+            return render(request, 'detection/result.html', {
+                'class_name': result['class_name'],
+                'confidence': result['confidence'],
+                'image_url': uploaded_image.image.url
             })
-    else:
-        upload_form = ImageUploadForm()
+
+        return render(request, 'detection/upload_image.html', {
+            'upload_form': upload_form,
+            'error': 'Invalid form submission. Please try again.'
+        })
+
+    upload_form = ImageUploadForm()
 
     return render(request, 'detection/upload_image.html', {
         'upload_form': upload_form,
     })
-
-
 def enter_url(request):
     if request.method == 'POST':
         url_form = ImageURLForm(request.POST)

@@ -23,12 +23,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-=9z^a3+xg)$qhhk1_7112_zc0!ix&eeu3htdw3=3dh04m2f1w$'
 
 # SECURITY WARNING: don't run with debug turned on in production!
+
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    "crop-disease-app-b3bmgtbaa9edeff4.centralindia-01.azurewebsites.net"
+]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://crop-disease-app-b3mgtbaa9edeff4.centralindia-01.azurewebsites.net"
+    "https://crop-disease-app-b3bmgtbaa9edeff4.centralindia-01.azurewebsites.net"
 ]
 
 
