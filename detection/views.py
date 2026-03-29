@@ -7,7 +7,7 @@ import numpy as np
 import requests
 from io import BytesIO
 from .forms import ImageUploadForm, ImageURLForm
-from azure.storage.blob import BlobServiceClient
+
 import os
 
 
@@ -48,6 +48,9 @@ def weather_view(request):
     return render(request, 'detection/weather.html')
 
 def upload_image(request):
+
+    from azure.storage.blob import BlobServiceClient   # move import here
+
     if request.method == 'POST':
         upload_form = ImageUploadForm(request.POST, request.FILES)
 
