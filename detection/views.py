@@ -109,38 +109,35 @@ def enter_url(request):
 
 def predict_image(image_path_or_url):
     try:
-        if image_path_or_url.startswith('http'):
-            # Handle the image as a URL
+
+        if isinstance(image_path_or_url, str) and image_path_or_url.startswith('http'):
             response = requests.get(image_path_or_url)
             image = Image.open(BytesIO(response.content)).convert("RGB")
         else:
-            # Handle the image as a file path
             image = Image.open(image_path_or_url).convert("RGB")
 
-        # Resize the image and normalize
         size = (224, 224)
         image = ImageOps.fit(image, size, Image.Resampling.LANCZOS)
+
         image_array = np.asarray(image)
         normalized_image_array = (image_array.astype(np.float32) / 127.5) - 1
 
-        # Set the tensor to point to the input data
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
-        interpreter.set_tensor(input_details[0]['index'], [normalized_image_array])
 
-        # Run the model
+        interpreter.set_tensor(input_details[0]['index'], [normalized_image_array])
         interpreter.invoke()
 
-        # Get the output tensor
         output_data = interpreter.get_tensor(output_details[0]['index'])
 
-        # Get the predicted class and confidence score
         index = np.argmax(output_data)
         class_name = class_names[index]
-        confidence_score = output_data[0][index] * 100  # Convert to percentage
+        confidence_score = output_data[0][index] * 100
 
-        return {'class_name': class_name, 'confidence': confidence_score}
-    
-    except (requests.exceptions.RequestException, UnidentifiedImageError, IOError) as e:
-        # Return an error message if there was an issue with the URL or image
-        return {'error': 'Invalid image or URL. Please try again with a different image or URL.'}
+        return {
+            'class_name': class_name,
+            'confidence': confidence_score
+        }
+
+    except Exception as e:
+        return {'error': str(e)}
