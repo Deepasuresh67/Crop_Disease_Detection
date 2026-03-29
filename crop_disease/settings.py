@@ -27,6 +27,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
+CSRF_TRUSTED_ORIGINS = [
+    "https://crop-disease-app-b3mgtbaa9edeff4.centralindia-01.azurewebsites.net"
+]
+
 
 # Application definition
 
