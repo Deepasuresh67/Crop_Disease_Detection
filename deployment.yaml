@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crop-disease-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: crop-disease
+  template:
+    metadata:
+      labels:
+        app: crop-disease
+    spec:
+      containers:
+      - name: crop-disease
+        image: cropdiseaseacr.azurecr.io/crop-disease:v1
+        ports:
+        - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: crop-disease-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: crop-disease
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 8000
