@@ -30,7 +30,7 @@ Welcome to the **Crop Disease Detection project!** This Django-based web applica
 ### 1️⃣ Clone the Repository  
 
 ```bash  
-git clone https://github.com/KarthikB6360/Crop_Disease_Prediction.git 
+git clone https://github.com/Deepasuresh67/Crop_Disease_Detection.git 
 cd crop-disease  
 ```  
 
