@@ -29,7 +29,7 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://crop-disease-app-b3bmgtbaa9edeff4.centralindia-01.azurewebsites.net"
+    "https://crop-disease-app-bpgza0c7hvdzbfaa.southeastasia-01.azurewebsites.net"
 ]
 
 
